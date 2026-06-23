@@ -1,101 +1,141 @@
-import { Container, Row, Col, Card } from 'react-bootstrap'
+import { Container, Carousel, Card, Row, Col } from 'react-bootstrap'
 
 function About() {
   return (
-    <div className="py-5">
-
+    <div className="py-5 bg-light min-vh-100">
       <Container>
-
-        {/* Title */}
+        {/* Page title */}
         <div className="text-center mb-5">
           <h2 className="fw-bold text-success">About AjaiSikam</h2>
-          <p className="text-muted">
+          <p className="text-muted mb-0">
             A smart AI-powered mentoring platform connecting students with the right guidance.
           </p>
         </div>
 
-        {/* Problem Statement */}
-        <Row className="mb-4">
-          <Col>
-            <Card className="border-0 shadow-sm p-4">
-              <h5 className="fw-bold mb-3">Problem</h5>
-              <p className="text-muted mb-0">
-                Thousands of students and graduates lack proper guidance.
-                They are confused about career paths, research opportunities,
-                job preparation, and often feel shy or unsure where to ask for help.
-              </p>
+        <Carousel
+          indicators={true}
+          interval={null}
+          className="about-carousel shadow-sm rounded overflow-hidden"
+        >
+          {/* Slide 1 */}
+          <Carousel.Item>
+            <Card
+              className="border-0 p-5 text-center about-slide-card"
+              style={{ minHeight: '420px' }}
+            >
+              <Card.Body className="d-flex flex-column justify-content-center">
+                <h3 className="fw-bold text-success mb-4">The Problem</h3>
+                <p className="text-muted fs-5">
+                  Thousands of students and graduates lack proper guidance. Many are confused about
+                  career paths, research opportunities, first jobs, and who to ask for honest advice.
+                  Some feel shy, embarrassed, or simply don’t have the right people around them.
+                </p>
+              </Card.Body>
             </Card>
-          </Col>
-        </Row>
+          </Carousel.Item>
 
-        {/* Solution / AI Feature */}
-        <Row className="mb-4">
-          <Col>
-            <Card className="border-0 shadow-sm p-4">
-              <h5 className="fw-bold mb-3">Our Solution</h5>
-              <p className="text-muted mb-0">
-                AjaiSikam connects seekers with mentors using AI-based matching.
-                Instead of random forums, the platform intelligently understands
-                user requests and suggests the most relevant mentors.
-              </p>
+          {/* Slide 2 */}
+          <Carousel.Item>
+            <Card
+              className="border-0 p-5 text-center about-slide-card"
+              style={{ minHeight: '420px' }}
+            >
+              <Card.Body className="d-flex flex-column justify-content-center">
+                <h3 className="fw-bold text-success mb-4">Our Solution</h3>
+                <p className="text-muted fs-5">
+                  AjaiSikam helps seekers find the right mentors using AI-powered matching.
+                  Instead of posting into a random forum and hoping someone replies,
+                  users get mentor recommendations based on their actual needs.
+                </p>
+              </Card.Body>
             </Card>
-          </Col>
-        </Row>
+          </Carousel.Item>
 
-        {/* Target Users + Value */}
-        <Row className="g-4 mb-4">
-          <Col md={6}>
-            <Card className="border-0 shadow-sm p-4 h-100">
-              <h5 className="fw-bold mb-3">Who is it for?</h5>
-              <ul className="text-muted mb-0">
-                <li>Students & recent graduates</li>
-                <li>Career switchers</li>
-                <li>Research aspirants</li>
-                <li>Anyone needing guidance</li>
-              </ul>
+          {/* Slide 3 */}
+          <Carousel.Item>
+            <Card
+              className="border-0 p-5 about-slide-card"
+              style={{ minHeight: '420px' }}
+            >
+              <Card.Body className="d-flex flex-column justify-content-center">
+                <h3 className="fw-bold text-success text-center mb-4">Who Is It For?</h3>
+                <Row className="justify-content-center">
+                  <Col md={8}>
+                    <ul className="text-muted fs-5">
+                      <li>Students and recent graduates</li>
+                      <li>People switching careers</li>
+                      <li>Research aspirants looking for guidance</li>
+                      <li>Anyone who needs mentorship but lacks a professional network</li>
+                    </ul>
+                  </Col>
+                </Row>
+              </Card.Body>
             </Card>
-          </Col>
+          </Carousel.Item>
 
-          <Col md={6}>
-            <Card className="border-0 shadow-sm p-4 h-100">
-              <h5 className="fw-bold mb-3">Value</h5>
-              <ul className="text-muted mb-0">
-                <li>Faster access to guidance</li>
-                <li>AI-powered mentor matching</li>
-                <li>Better career decisions</li>
-                <li>Reduced confusion & stress</li>
-              </ul>
+          {/* Slide 4 */}
+          <Carousel.Item>
+            <Card
+              className="border-0 p-5 about-slide-card"
+              style={{ minHeight: '420px' }}
+            >
+              <Card.Body className="d-flex flex-column justify-content-center">
+                <h3 className="fw-bold text-success text-center mb-4">Why It Matters</h3>
+                <Row className="g-4 justify-content-center">
+                  <Col md={5}>
+                    <Card className="border-0 shadow-sm h-100 p-3 text-center">
+                      <h5 className="fw-bold">For Seekers</h5>
+                      <p className="text-muted mb-0">
+                        Get faster access to guidance, better career decisions, and less confusion.
+                      </p>
+                    </Card>
+                  </Col>
+                  <Col md={5}>
+                    <Card className="border-0 shadow-sm h-100 p-3 text-center">
+                      <h5 className="fw-bold">For the Community</h5>
+                      <p className="text-muted mb-0">
+                        Build a healthy mentoring culture, meaningful networking, and support mental well-being.
+                      </p>
+                    </Card>
+                  </Col>
+                </Row>
+              </Card.Body>
             </Card>
-          </Col>
-        </Row>
+          </Carousel.Item>
 
-        {/* System Overview */}
-        <Row className="mb-4">
-          <Col>
-            <Card className="border-0 shadow-sm p-4">
-              <h5 className="fw-bold mb-3">How it Works (System)</h5>
-              <p className="text-muted mb-0">
-                Built using React frontend, Django REST backend, PostgreSQL database,
-                and Hugging Face AI models for request classification and mentor matching.
-              </p>
+          {/* Slide 5 */}
+          <Carousel.Item>
+            <Card
+              className="border-0 p-5 text-center about-slide-card"
+              style={{ minHeight: '420px' }}
+            >
+              <Card.Body className="d-flex flex-column justify-content-center">
+                <h3 className="fw-bold text-success mb-4">How the Platform Works</h3>
+                <p className="text-muted fs-5">
+                  AjaiSikam is built with React, Django REST Framework, and PostgreSQL.
+                  AI models help categorize help requests and match seekers with relevant mentors.
+                </p>
+              </Card.Body>
             </Card>
-          </Col>
-        </Row>
+          </Carousel.Item>
 
-        {/* MVP Scope */}
-        <Row>
-          <Col>
-            <Card className="border-0 shadow-sm p-4">
-              <h5 className="fw-bold mb-3">MVP Scope</h5>
-              <p className="text-muted mb-0">
-                Users can register as seekers or mentors, post help requests,
-                receive AI-based mentor suggestions, connect, and communicate
-                through a simple messaging system.
-              </p>
+          {/* Slide 6 */}
+          <Carousel.Item>
+            <Card
+              className="border-0 p-5 text-center about-slide-card"
+              style={{ minHeight: '420px' }}
+            >
+              <Card.Body className="d-flex flex-column justify-content-center">
+                <h3 className="fw-bold text-success mb-4">MVP Scope</h3>
+                <p className="text-muted fs-5">
+                  Users can register as seekers or mentors, post help requests,
+                  receive AI-based mentor suggestions, send connection requests,
+                  and exchange simple threaded messages once connected.
+                </p>
+              </Card.Body>
             </Card>
-          </Col>
-        </Row>
-
+          </Carousel.Item>
+        </Carousel>
       </Container>
     </div>
   )

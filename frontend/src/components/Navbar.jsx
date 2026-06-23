@@ -10,7 +10,7 @@ function AppNavbar() {
             <Container>
 
                 <Navbar.Brand href="/" className="fw-bold text-success fs-4">
-                    अजै सिकाम : Mentoring Platform
+                    अजै सिकम : Mentoring Platform
                 </Navbar.Brand>
 
                 <Navbar.Toggle aria-controls="main-nav" />
