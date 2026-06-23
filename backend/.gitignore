@@ -1,0 +1,46 @@
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django database
+db.sqlite3
+db.sqlite3-journal
+
+# Pytest
+.pytest_cache/
+
+# Coverage / test reports
+.coverage
+htmlcov/
+coverage.xml
+
+# Environment variables
+.env
+
+# VS Code / IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Migrations cache (do NOT ignore actual migration files)
+**/__pycache__/
+
+# Static/media generated files (optional if you use them later)
+staticfiles/
+media/
+
+# MyPy / Ruff / other tooling caches
+.mypy_cache/
+.ruff_cache/
