@@ -5,6 +5,8 @@ import heroImg from './assets/hero.png'
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
+import RegisterPage from './pages/RegisterPage'
+import LoginPage from './pages/LoginPage'
 import About from './pages/About'
 import MainLayout from './components/MainLayout'
 
@@ -22,6 +24,23 @@ function App() {
             <About />
           </MainLayout>
         } />
+
+        <Route path='/register' element={
+          <MainLayout>
+            <RegisterPage />
+          </MainLayout>
+        }
+        />
+
+        <Route path='/login' element={
+          <MainLayout>
+            <LoginPage />
+          </MainLayout>
+        }
+        />
+
+
+
 
       </Routes>
     </BrowserRouter>
