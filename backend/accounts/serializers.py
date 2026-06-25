@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User
+from .models import User, SeekerProfile, AnswerSeeker
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -42,7 +42,10 @@ class LoginSerializer(serializers.Serializer):
 
         return { #return the refresh and access token
             'refresh': str(refresh),
-            'access': str(refresh.access_token)
+            'access': str(refresh.access_token),
+            'role':user.role,
+            'full_name':user.full_name,
+            'location':user.location,
         }
 
 
@@ -52,3 +55,44 @@ class LogoutSerializer(serializers.Serializer):
     def save(self):
         token = RefreshToken(self.validated_data['refresh'])
         token.blacklist() #here we take refresh token, add it to blacklist so it cannot be used again.
+
+#---------------For Seeker Profile-----------------
+class SeekerProfileSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(source='user.full_name', read_only=True)
+    location = serializers.CharField(source='user.location', required=False, allow_blank=True)
+    role = serializers.CharField(source='user.role', read_only=True)
+    username = serializers.CharField(source='user.username', read_only=True)
+
+    class Meta:
+        model = SeekerProfile
+        fields = [
+            'id',
+            'username',
+            'full_name',
+            'location',
+            'role',
+            'bio',
+            'learning_goal',
+            'interest',
+            'custom_interest',
+            'is_rural',
+        ]
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', {})
+
+        if 'location' in user_data:
+            instance.user.location = user_data['location']
+            instance.user.save()
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        return instance
+
+
+class AnswerSeekerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AnswerSeeker
+        fields = ['id', 'title', 'description', 'category', 'status', 'created_at']
+        read_only_fields = ['id', 'status', 'created_at']
