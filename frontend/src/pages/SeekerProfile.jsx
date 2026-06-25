@@ -121,9 +121,12 @@ function SeekerProfile() {
     try {
       const res = await updateSeekerProfile(profileForm)
       setProfile(res.data)
+
+      localStorage.setItem("location", res.data.location || "")
+
       setShowProfileForm(false)
     } catch (error) {
-      console.log("Error updating profile:", error)
+      console.error("Error updating profile:", error)
     }
   }
 
@@ -222,10 +225,18 @@ function SeekerProfile() {
               <Col md={7}>
                 <h3 className="fw-bold mb-1">{fullName}</h3>
                 <p className="mb-1 text-muted">Role: {role}</p>
-                <p className="mb-1 text-muted">Location: {location}</p>
+                <p className="mb-1 text-muted">Location: {profile?.location || "Not added"}</p>
                 <p className="mb-0">
                   <strong>Bio:</strong> {profile?.bio || 'Not added yet'}
                 </p>
+                <div className="d-flex gap-2 flex-wrap mt-2">
+
+                  {profile?.is_rural && (
+                    <span className="badge bg-warning-subtle text-dark border border-warning">
+                      Remote Student
+                    </span>
+                  )}
+                </div>
               </Col>
 
               <Col md={3}>
@@ -461,11 +472,6 @@ function SeekerProfile() {
                     </span>
                   )}
 
-                  {profile?.is_rural && (
-                    <span className="badge bg-warning-subtle text-dark border border-warning">
-                      Remote Student
-                    </span>
-                  )}
                 </div>
               </Card.Body>
             </Card>
