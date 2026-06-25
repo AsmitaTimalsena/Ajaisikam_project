@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Container, Form, Button, Card, Alert } from 'react-bootstrap'
+import { Form, Button, Card, Container, Alert } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { loginUser } from '../services/authService'
 
@@ -11,7 +11,6 @@ function LoginPage() {
     password: '',
   })
 
-  const [success, setSuccess] = useState('')
   const [error, setError] = useState('')
 
   const handleChange = (e) => {
@@ -24,31 +23,35 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    setSuccess('')
 
     try {
       const response = await loginUser(formData)
 
-      localStorage.setItem('access_token', response.data.access)
+      // store tokens + role
+      localStorage.setItem('token', response.data.access)
       localStorage.setItem('refresh_token', response.data.refresh)
+      localStorage.setItem('role', response.data.role)
+      localStorage.setItem("full_name", response.data.full_name)
+      localStorage.setItem("location", response.data.location)
 
-      setSuccess('Login successful')
-
-      setTimeout(() => {
+      // redirect based on role
+      if (response.data.role === 'SEEKER') {
+        navigate('/seeker-profile')
+      } else if (response.data.role === 'MENTOR') {
+        navigate('/mentor-profile')
+      } else {
         navigate('/')
-      }, 1000)
+      }
     } catch (err) {
-      console.log(err)
       setError('Invalid username or password')
     }
   }
 
   return (
     <Container className="py-5" style={{ maxWidth: '500px' }}>
-      <Card className="shadow p-4">
+      <Card className="shadow-sm p-4 border-0">
         <h2 className="text-success mb-4 text-center">Login</h2>
 
-        {success && <Alert variant="success">{success}</Alert>}
         {error && <Alert variant="danger">{error}</Alert>}
 
         <Form onSubmit={handleSubmit}>
@@ -59,6 +62,7 @@ function LoginPage() {
               name="username"
               value={formData.username}
               onChange={handleChange}
+              placeholder="Enter username"
               required
             />
           </Form.Group>
@@ -70,6 +74,7 @@ function LoginPage() {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              placeholder="Enter password"
               required
             />
           </Form.Group>
