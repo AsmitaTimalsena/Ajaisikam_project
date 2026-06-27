@@ -68,3 +68,42 @@ class AnswerSeeker(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+#--------------Mentor Profile---------------
+BADGE_CHOICES = [
+    ('BRONZE', 'Bronze'),
+    ('SILVER', 'Silver'),
+    ('GOLD', 'Gold'),
+    ('PLATINUM', 'Platinum'),
+]
+
+
+class MentorProfile(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='mentor_profile')
+    bio = models.TextField(blank=True)
+    expertise = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='TECH')
+    custom_expertise = models.CharField(max_length=100, blank=True)
+    experience = models.CharField(max_length=100, blank=True)
+    points = models.IntegerField(default=0)
+    badge_level = models.CharField(max_length=20, choices=BADGE_CHOICES, default='BRONZE')
+
+    def __str__(self):
+        return self.user.username
+
+
+class MentorReply(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    post = models.ForeignKey(AnswerSeeker, on_delete=models.CASCADE, related_name='replies')
+    mentor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mentor_replies')
+
+    reply = models.TextField()
+
+    share_contact = models.BooleanField(default=False)
+    contact_info = models.CharField(max_length=150, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.mentor.username} replied"

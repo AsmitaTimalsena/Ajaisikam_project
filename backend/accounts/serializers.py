@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User, SeekerProfile, AnswerSeeker
+from .models import User, SeekerProfile, AnswerSeeker, MentorProfile, MentorReply
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -21,6 +21,15 @@ class RegisterSerializer(serializers.ModelSerializer):
             full_name=validated_data.get('full_name', ''),
             location=validated_data.get('location', '')
         )
+        if user.role == 'SEEKER':
+            SeekerProfile.objects.create(user=user)
+
+        elif user.role == 'MENTOR':
+            MentorProfile.objects.create(user=user)
+
+        else:   # BOTH
+            SeekerProfile.objects.create(user=user)
+            MentorProfile.objects.create(user=user)
         return user
 
 
@@ -96,3 +105,19 @@ class AnswerSeekerSerializer(serializers.ModelSerializer):
         model = AnswerSeeker
         fields = ['id', 'title', 'description', 'category', 'status', 'created_at']
         read_only_fields = ['id', 'status', 'created_at']
+
+
+#------------------------for mentor profile------------------
+class MentorProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MentorProfile
+        fields = '__all__'
+        read_only_fields = ['id', 'user', 'points', 'badge_level']
+
+class MentorReplySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MentorReply
+        fields = '__all__'
+        read_only_fields = ['id', 'mentor', 'created_at']
