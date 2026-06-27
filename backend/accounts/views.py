@@ -6,9 +6,9 @@ from .serializers import (
     LoginSerializer,
     LogoutSerializer,
     SeekerProfileSerializer,
-    AnswerSeekerSerializer
+    AnswerSeekerSerializer, MentorProfileSerializer, MentorReplySerializer
 )
-from .models import SeekerProfile, AnswerSeeker
+from .models import SeekerProfile, AnswerSeeker, MentorProfile, MentorReply
 
 class Register(APIView):
     def post(self, request):
@@ -103,3 +103,85 @@ class AnswerSeekerDetailView(APIView):
         return Response({'message': 'Post deleted successfully'}, status=204)
 
 
+#-------------------Mentor Profile Views/Pages--------------
+class MentorProfileView(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        profile = request.user.mentor_profile
+        serializer = MentorProfileSerializer(profile)
+        return Response(serializer.data)
+
+    def put(self, request):
+        profile = request.user.mentor_profile
+        serializer = MentorProfileSerializer(profile, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=400)
+    
+
+class MentorReplyListCreateView(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, post_id):
+        replies = MentorReply.objects.filter(post_id=post_id)
+        serializer = MentorReplySerializer(replies, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, post_id):
+
+        serializer = MentorReplySerializer(data=request.data)
+
+        if serializer.is_valid():
+
+            serializer.save(
+                mentor=request.user,
+                post_id=post_id
+            )
+
+            profile = request.user.mentor_profile
+            profile.points += 5
+
+            if profile.points >= 100:
+                profile.badge_level = 'PLATINUM'
+            elif profile.points >= 60:
+                profile.badge_level = 'GOLD'
+            elif profile.points >= 30:
+                profile.badge_level = 'SILVER'
+            else:
+                profile.badge_level = 'BRONZE'
+
+            profile.save()
+
+            return Response(serializer.data, status=201)
+
+        return Response(serializer.errors, status=400)
+    
+
+class MentorReplyDetailView(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def put(self, request, pk):
+
+        reply = MentorReply.objects.get(pk=pk)
+
+        serializer = MentorReplySerializer(reply, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=400)
+
+    def delete(self, request, pk):
+
+        reply = MentorReply.objects.get(pk=pk)
+        reply.delete()
+
+        return Response(status=204)
