@@ -1,6 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import permissions
+from rest_framework import permissions, status
+from django.shortcuts import get_object_or_404
+
 from .serializers import (
     RegisterSerializer,
     LoginSerializer,
@@ -171,7 +173,10 @@ class MentorReplyDetailView(APIView):
 
         reply = MentorReply.objects.get(pk=pk)
 
-        serializer = MentorReplySerializer(reply, data=request.data)
+        if reply.mentor != request.user:
+            return Response({"error": "Not allowed"}, status=status.HTTP_403_FORBIDDEN) #this ensures that one mentor cannot edit or delete another mentor's reply
+
+        serializer = MentorReplySerializer(reply, data=request.data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
@@ -182,6 +187,10 @@ class MentorReplyDetailView(APIView):
     def delete(self, request, pk):
 
         reply = MentorReply.objects.get(pk=pk)
+
+        if reply.mentor != request.user:
+            return Response({"error": "Not allowed"}, status=status.HTTP_403_FORBIDDEN)
+
         reply.delete()
 
         return Response(status=204)

@@ -1,5 +1,5 @@
 import pytest
-from accounts.models import User
+from accounts.models import User, MentorReply, MentorProfile
 from rest_framework.test import APIClient
 
 @pytest.fixture
@@ -28,4 +28,29 @@ def auth_client(dummy_users):
 
     access_token = response.data['access']
     client.credentials(HTTP_AUTHORIZATION=f'Bearer {access_token}')
+    return client
+
+
+@pytest.fixture
+def mentor_client(db):
+    mentor = User.objects.create_user(
+        username='mentor1',
+        email='mentor1@gmail.com',
+        password='Mentor@123',
+        role='MENTOR',
+        full_name='Mentor One',
+        location = 'Kathmandu'
+    )
+
+    MentorProfile.objects.create(user=mentor)
+
+    client = APIClient()
+    response = client.post('/api/login/',{
+        'username': 'mentor1',
+        'password':'Mentor@123'
+    }, format='json')
+
+    access = response.data['access']
+    client.credentials(HTTP_AUTHORIZATION=f'Bearer {access}')
+
     return client

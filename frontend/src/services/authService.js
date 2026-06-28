@@ -36,5 +36,25 @@ export const createSeekerPost = (data) => API.post('seeker/posts/', data)
 export const updateSeekerPost = (id, data) => API.put(`seeker/posts/${id}/`, data)
 export const deleteSeekerPost = (id) => API.delete(`seeker/posts/${id}/`)
 
+
+//-------------------Mentor Profile APIs--------------
+// Mentor Profile
+export const getMentorProfile = () => API.get("mentor/profile/")
+export const updateMentorProfile = (data) => API.put("mentor/profile/", data)
+
+// Replies
+export const getRecommendedPosts = () => API.get("mentor/posts/")
+export const createReply = (postId, data) =>API.post(`mentor/posts/${postId}/replies/`, data)
+
+export const updateReply = (id, data) => API.put(`mentor/replies/${id}/`, data)
+
+export const deleteReply = (id) =>API.delete(`mentor/replies/${id}/`)
+
+
+
+
+
+
+
 export default API
 

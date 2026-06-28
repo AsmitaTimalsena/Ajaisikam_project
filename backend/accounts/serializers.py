@@ -120,4 +120,9 @@ class MentorReplySerializer(serializers.ModelSerializer):
     class Meta:
         model = MentorReply
         fields = '__all__'
-        read_only_fields = ['id', 'mentor', 'created_at']
+        read_only_fields = ['id', 'mentor', 'post', 'created_at']
+
+        def get_contact_info(self, obj):
+            if obj.share_contact:
+                return obj.contact_info
+            return ""
