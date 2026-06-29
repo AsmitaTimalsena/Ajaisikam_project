@@ -46,7 +46,7 @@ class SeekerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name='seeker_profile')
     bio = models.TextField(blank=True)
     learning_goal = models.TextField(blank=True)
-    interest = models.CharField(max_length=30, choices=CATEGORY_CHOICES,default='TECH')
+    interests = models.JSONField(default=list)
 
      # if interest = OTHER, user can write custom one
     custom_interest = models.CharField(max_length=100, blank=True)
@@ -83,7 +83,7 @@ class MentorProfile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='mentor_profile')
     bio = models.TextField(blank=True)
-    expertise = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='TECH')
+    expertise = models.JSONField(default=list)
     custom_expertise = models.CharField(max_length=100, blank=True)
     experience = models.CharField(max_length=100, blank=True)
     points = models.IntegerField(default=0)

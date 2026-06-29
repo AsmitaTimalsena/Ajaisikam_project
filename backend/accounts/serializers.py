@@ -82,7 +82,7 @@ class SeekerProfileSerializer(serializers.ModelSerializer):
             'role',
             'bio',
             'learning_goal',
-            'interest',
+            'interests',
             'custom_interest',
             'is_rural',
         ]
