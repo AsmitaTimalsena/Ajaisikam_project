@@ -24,7 +24,7 @@ function SeekerProfile() {
     location: '',
     bio: '',
     learning_goal: '',
-    interest: 'TECH',
+    interests: [],
     custom_interest: '',
     is_rural: false
   })
@@ -84,16 +84,20 @@ function SeekerProfile() {
     try {
       const res = await getSeekerProfile()
       setProfile(res.data)
+      console.log(res.data)
+      console.log(res.data.interests)
 
       setProfileForm({
         bio: res.data.bio || '',
         learning_goal: res.data.learning_goal || '',
-        interest: res.data.interest || 'TECH',
+        interests: res.data.interests || [],
         custom_interest: res.data.custom_interest || '',
         is_rural: res.data.is_rural || false
       })
     } catch (error) {
       console.log("Error fetching seeker profile:", error)
+      
+      
     }
   }
 
@@ -119,7 +123,9 @@ function SeekerProfile() {
   const handleSaveProfile = async (e) => {
     e.preventDefault()
     try {
+      console.log("Sending to backend:", profileForm.interests);
       const res = await updateSeekerProfile(profileForm)
+      
       setProfile(res.data)
 
       localStorage.setItem("location", res.data.location || "")
@@ -193,7 +199,7 @@ function SeekerProfile() {
 
     if (profile?.bio) filled++
     if (profile?.learning_goal) filled++
-    if (profile?.interest) filled++
+    if (profile?.interests?.length > 0) filled++
     if (profile?.is_rural !== null && profile?.is_rural !== undefined) filled++
 
     return Math.round((filled / total) * 100)
@@ -204,6 +210,31 @@ function SeekerProfile() {
       ? posts
       : posts.filter(post => post.category === filterCategory)
 
+  console.log(profileForm.interests)
+  console.log(typeof profileForm.interests)
+
+
+  const handleCheckbox = (field, value) => { //for interests checkbox
+
+    const current = profileForm[field]
+
+    if (current.includes(value)) {
+
+      setProfileForm({
+        ...profileForm,
+        [field]: current.filter(item => item !== value)
+      })
+
+    } else {
+
+      setProfileForm({
+        ...profileForm,
+        [field]: [...current, value]
+      })
+
+    }
+
+  }
   return (
     <>
       <ProfileNavbar />
@@ -302,15 +333,16 @@ function SeekerProfile() {
 
                   <Col md={6} className="mb-3">
                     <Form.Label>Interest</Form.Label>
-                    <Form.Select
-                      name="interest"
-                      value={profileForm.interest}
-                      onChange={handleProfileChange}
-                    >
-                      {categories.map(cat => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </Form.Select>
+                    {categories.map(category => (
+                      <Form.Check
+                        key={category}
+                        label={category}
+                        checked={(profileForm.interests || []).includes(category)}
+                        onChange={() => handleCheckbox("interests", category)}
+                      />
+
+                    ))}
+
                   </Col>
 
                   {profileForm.interest === 'OTHER' && (
@@ -464,13 +496,28 @@ function SeekerProfile() {
           <Col md={4}>
             <Card className="shadow-sm border-0 mb-4">
               <Card.Body>
-                <h5 className="fw-bold" style={{ color: '#4E220F' }}>My Interest</h5>
+                <h5 className="fw-bold" style={{ color: '#4E220F' }}>
+                  My Interests
+                </h5>
+
                 <div className="d-flex gap-2 flex-wrap mt-2">
-                  {profile?.interest && (
-                    <span className="badge bg-danger-subtle text-danger border border-danger">
-                      {profile.interest === "OTHER" ? profile.custom_interest : profile.interest}
+
+                  {profile?.interests?.map((item) => (
+                    <span
+                      key={item}
+                      className="badge bg-danger-subtle text-danger border border-danger"
+                    >
+                      
+                      {item}
                     </span>
-                  )}
+                  ))}
+
+                  {profile?.interests?.includes("OTHER") &&
+                    profile?.custom_interest && (
+                      <span className="badge bg-danger-subtle text-danger border border-danger">
+                        {profile.custom_interest}
+                      </span>
+                    )}
 
                 </div>
               </Card.Body>
@@ -518,7 +565,7 @@ function SeekerProfile() {
             </Card>
           </Col>
         </Row>
-      </Container>
+      </Container >
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Delete Post</Modal.Title>

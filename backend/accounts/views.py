@@ -164,7 +164,15 @@ class MentorReplyListCreateView(APIView):
 
         return Response(serializer.errors, status=400)
     
+class MentorRecommendedPostsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
 
+    def get(self, request):
+        posts = AnswerSeeker.objects.filter(status='OPEN').order_by('-created_at')
+        serializer = AnswerSeekerSerializer(posts, many=True)
+        return Response(serializer.data)
+    
+    
 class MentorReplyDetailView(APIView):
 
     permission_classes = [permissions.IsAuthenticated]

@@ -26,20 +26,20 @@ class TestSeekerFeatures:
 
         assert response.status_code == 200
         assert 'full_name' in response.data
-        assert 'interest' in response.data
+        assert 'interests' in response.data
 
     def test_update_seeker_profile(self, auth_client):
         response = auth_client.put('/api/seeker/profile/', {
             'bio': 'I am interested in web development',
             'learning_goal': 'I want guidance in AI/ML',
-            'interest': 'OTHER',
+            'interests': ['TECH','OTHER'],
             'custom_interest': 'Study Abroad',
             'is_rural': True
         }, format='json')
 
         assert response.status_code == 200
         assert response.data['bio'] == 'I am interested in web development'
-        assert response.data['interest'] == 'OTHER'
+        assert response.data['interests'] == ['TECH','OTHER']
 
     def test_create_seeker_post(self, auth_client):
         response = auth_client.post('/api/seeker/posts/', {

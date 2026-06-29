@@ -40,7 +40,7 @@ class TestMentorFeatures:
 
         response = mentor_client.put('/api/mentor/profile/', {
             'bio': 'Helping students',
-            'expertise': 'TECH',
+            'expertise': ['TECH','BUSINESS'],
             'custom_expertise': '',
             'experience': '3 years'
         }, format='json')
