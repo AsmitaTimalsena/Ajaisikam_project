@@ -202,3 +202,16 @@ class MentorReplyDetailView(APIView):
         reply.delete()
 
         return Response(status=204)
+    
+#endpoint where mentor can see their history of replies
+class MentorMyRepliesView(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        replies = MentorReply.objects.filter(
+            mentor=request.user
+        ).order_by('-created_at')
+
+        serializer = MentorReplySerializer(replies, many=True)
+        return Response(serializer.data)

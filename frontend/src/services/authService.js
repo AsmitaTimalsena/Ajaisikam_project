@@ -50,6 +50,8 @@ export const updateReply = (id, data) => API.put(`mentor/replies/${id}/`, data)
 
 export const deleteReply = (id) =>API.delete(`mentor/replies/${id}/`)
 
+//to see replies
+export const getMyReplies = () =>API.get("mentor/replies/")
 
 
 
