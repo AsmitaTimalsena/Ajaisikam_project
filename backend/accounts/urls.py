@@ -17,7 +17,7 @@ urlpatterns = [
     path('mentor/profile/', MentorProfileView.as_view()),
     path('mentor/posts/', MentorRecommendedPostsView.as_view(), name='mentor-posts'),
 
-    path('mentor/posts/<uuid:post_id>/replies/', MentorReplyListCreateView.as_view()),
+    path('mentor/posts/<uuid:post_id>/replies/', MentorReplyListCreateView.as_view(),  name='mentor-replies'),
 
     path('mentor/replies/<uuid:pk>/', MentorReplyDetailView.as_view()),
     path('mentor/replies/',MentorMyRepliesView.as_view(),name='mentor-my-replies'
