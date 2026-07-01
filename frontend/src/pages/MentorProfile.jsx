@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Container, Row, Col, Card, Button, Form, Badge, ProgressBar } from 'react-bootstrap'
 import ProfileNavbar from '../components/ProfileNavbar'
-import { getMentorProfile, updateMentorProfile, getRecommendedPosts } from '../services/authService'
+import { getMentorProfile, updateMentorProfile, getRecommendedPosts, createReply, } from '../services/authService'
+import { getMyReplies, deleteReply, updateReply } from '../services/authService'
 
 const categories = ['CAREER', 'RESEARCH', 'TECH', 'EDUCATION', 'CHEMISTRY', 'BIOLOGY', 'PHYSICS', 'ASTRONOMY', 'LITERATURE', 'BUSINESS', 'OTHER']
 
@@ -10,6 +11,10 @@ function MentorProfile() {
     const [profile, setProfile] = useState(null)
     const [posts, setPosts] = useState([])
     const [loading, setLoading] = useState(true)
+    const [myReplies, setMyReplies] = useState([])
+    const [editingReplyId, setEditingReplyId] = useState(null)
+    const [replyingPostId, setReplyingPostId] = useState(null)
+
 
     const [showProfileForm, setShowProfileForm] = useState(false)
 
@@ -51,9 +56,10 @@ function MentorProfile() {
 
     const fetchData = async () => {
         try {
-
             const profileRes = await getMentorProfile()
             const postsRes = await getRecommendedPosts()
+            const repliesRes = await getMyReplies()
+
             console.log(profileRes.data)
             console.log(postsRes.data)
 
@@ -66,12 +72,11 @@ function MentorProfile() {
             })
 
             setPosts(postsRes.data)
+            setMyReplies(repliesRes.data)
 
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err)
-        }
-        finally {
+        } finally {
             setLoading(false)
         }
     }
@@ -126,6 +131,74 @@ function MentorProfile() {
 
         }
     }
+
+
+    const handleDeleteReply = async (id) => {
+        try {
+            await deleteReply(id)
+            fetchData()
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const [replyForm, setReplyForm] = useState({
+        reply: '',
+        share_contact: false,
+        contact_info: ''
+    })
+
+    const handleUpdateReply = async () => {
+
+        try {
+
+            await updateReply(editingReplyId, replyForm)
+
+            fetchData()
+
+            setEditingReplyId(null)
+
+        } catch (err) {
+
+            console.log(err)
+
+        }
+
+    }
+
+    const [newReply, setNewReply] = useState({
+        reply: '',
+        share_contact: false,
+        contact_info: ''
+    })
+
+    const handleCreateReply = async (postId) => {
+        try {
+
+            console.log(newReply)
+
+            const res = await createReply(postId, newReply)
+
+            console.log(res.data)
+
+            fetchData()
+
+            setReplyingPostId(null)
+
+            setNewReply({
+                reply: '',
+                share_contact: false,
+                contact_info: ''
+            })
+
+        } catch (err) {
+            console.log(err.response?.data)
+        }
+    }
+
+
+
+
     if (loading) {
         return <h3 className="text-center mt-5">Loading...</h3>
     }
@@ -352,7 +425,7 @@ function MentorProfile() {
                 <Card className="shadow-sm border-0">
                     <Card.Body>
 
-                        <h4 className="mb-4">Recommended Questions</h4>
+                        <h4 className="mb-4">Recommended Posts</h4>
 
                         {posts.length === 0 ? (
 
@@ -372,9 +445,84 @@ function MentorProfile() {
 
                                         <p className="mt-3">{post.description}</p>
 
-                                        <Button variant="outline-success">
+                                        <Button variant="outline-success" onClick={() => setReplyingPostId(post.id)}>
                                             Reply
                                         </Button>
+                                        {replyingPostId === post.id && (
+
+                                            <div className="mt-3">
+
+                                                <Form.Control
+                                                    as="textarea"
+                                                    rows={3}
+                                                    placeholder="Write your reply..."
+                                                    value={newReply.reply}
+                                                    onChange={(e) =>
+                                                        setNewReply({
+                                                            ...newReply,
+                                                            reply: e.target.value
+                                                        })
+                                                    }
+                                                />
+
+                                                <Form.Check
+                                                    className="mt-3"
+                                                    label="Share my contact"
+                                                    checked={newReply.share_contact}
+                                                    onChange={(e) =>
+                                                        setNewReply({
+                                                            ...newReply,
+                                                            share_contact: e.target.checked
+                                                        })
+                                                    }
+                                                />
+
+                                                {newReply.share_contact && (
+
+                                                    <Form.Control
+                                                        className="mt-2"
+                                                        placeholder="Email or phone"
+                                                        value={newReply.contact_info}
+                                                        onChange={(e) =>
+                                                            setNewReply({
+                                                                ...newReply,
+                                                                contact_info: e.target.value
+                                                            })
+                                                        }
+                                                    />
+
+                                                )}
+
+                                                <div className="mt-3 d-flex gap-2">
+
+                                                    <Button
+                                                        variant="success"
+                                                        onClick={() => handleCreateReply(post.id)}
+                                                    >
+                                                        Submit Reply
+                                                    </Button>
+
+                                                    <Button
+                                                        variant="outline-secondary"
+                                                        onClick={() => {
+                                                            setReplyingPostId(null)
+                                                            setNewReply({
+                                                                reply: '',
+                                                                share_contact: false,
+                                                                contact_info: ''
+                                                            })
+                                                        }}
+                                                    >
+                                                        Cancel
+                                                    </Button>
+
+                                                </div>
+
+
+
+                                            </div>
+
+                                        )}
 
                                     </Card.Body>
 
@@ -384,6 +532,64 @@ function MentorProfile() {
 
                         )}
 
+                    </Card.Body>
+                </Card>
+
+                <Card className="shadow-sm border-0 mt-4">
+                    <Card.Body>
+                        <h4 className="fw-bold mb-3">My Replies</h4>
+
+                        {myReplies.length === 0 ? (
+                            <p className="text-muted">You haven't replied to any posts yet.</p>
+                        ) : (
+                            myReplies.map(reply => (
+                                <Card key={reply.id} className="mb-3">
+                                    <Card.Body>
+                                        {editingReplyId === reply.id ? (
+                                            <>
+                                                <Form.Control
+                                                    className="mb-2"
+                                                    value={replyForm.reply}
+                                                    onChange={(e) => setReplyForm({ ...replyForm, reply: e.target.value })}
+                                                />
+
+                                                <Button size="sm" variant="success" onClick={handleUpdateReply}>Save</Button>
+
+                                                <Button
+                                                    size="sm"
+                                                    variant="secondary"
+                                                    className="ms-2"
+                                                    onClick={() => setEditingReplyId(null)}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                            </>
+                                        ) : (
+                                            <p>{reply.reply}</p>
+                                        )}
+
+                                        {reply.share_contact && (
+                                            <Badge bg="success">Contact Shared</Badge>
+                                        )}
+
+                                        <div className="mt-3">
+                                            <Button size="sm" variant="warning" onClick={() => {
+
+                                                setEditingReplyId(reply.id)
+
+                                                setReplyForm({
+                                                    reply: reply.reply,
+                                                    share_contact: reply.share_contact,
+                                                    contact_info: reply.contact_info
+                                                })
+
+                                            }}>Edit</Button>
+                                            <Button size="sm" variant="danger" className="ms-2" onClick={() => handleDeleteReply(reply.id)} >Delete</Button>
+                                        </div>
+                                    </Card.Body>
+                                </Card>
+                            ))
+                        )}
                     </Card.Body>
                 </Card>
 
