@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Container, Row, Col, Card, Button, Form, Badge, ProgressBar } from 'react-bootstrap'
+import { Container, Row, Col, Card, Button, Form, Badge, ProgressBar, Modal } from 'react-bootstrap'
 import ProfileNavbar from '../components/ProfileNavbar'
 import { getMentorProfile, updateMentorProfile, getRecommendedPosts, createReply, } from '../services/authService'
 import { getMyReplies, deleteReply, updateReply } from '../services/authService'
@@ -14,12 +14,15 @@ function MentorProfile() {
     const [myReplies, setMyReplies] = useState([])
     const [editingReplyId, setEditingReplyId] = useState(null)
     const [replyingPostId, setReplyingPostId] = useState(null)
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [selectedReplyId, setSelectedReplyId] = useState(null)
 
 
     const [showProfileForm, setShowProfileForm] = useState(false)
 
     const [profileForm, setProfileForm] = useState({
         location: '',
+
         bio: '',
         experience: '',
         expertise: [],
@@ -62,6 +65,7 @@ function MentorProfile() {
 
             console.log(profileRes.data)
             console.log(postsRes.data)
+            console.log(repliesRes.data[0])
 
             setProfile(profileRes.data)
 
@@ -133,9 +137,15 @@ function MentorProfile() {
     }
 
 
-    const handleDeleteReply = async (id) => {
+    const confirmDeleteReply = (id) => {
+        setSelectedReplyId(id)
+        setShowDeleteModal(true)
+    }
+
+    const handleDeleteReply = async () => {
         try {
-            await deleteReply(id)
+            await deleteReply(selectedReplyId)
+            setShowDeleteModal(false)
             fetchData()
         } catch (err) {
             console.log(err)
@@ -439,9 +449,21 @@ function MentorProfile() {
 
                                     <Card.Body>
 
-                                        <h5>{post.title}</h5>
+                                        <h5>{post.seeker_name}</h5>
+                                        <h5>Title: {post.title}</h5>
 
                                         <Badge bg="success">{post.category}</Badge>
+                                        {post.replied ? (
+                                            <Badge bg="warning" className="ms-2" text="dark">Replied
+                                            </Badge>
+                                        ) : (
+                                            <Button
+                                                variant="outline-success"
+                                                onClick={() => setReplyingPostId(post.id)}
+                                            >Reply </Button>
+                                            
+                                        )}
+
 
                                         <p className="mt-3">{post.description}</p>
 
@@ -518,8 +540,6 @@ function MentorProfile() {
 
                                                 </div>
 
-
-
                                             </div>
 
                                         )}
@@ -565,7 +585,16 @@ function MentorProfile() {
                                                 </Button>
                                             </>
                                         ) : (
-                                            <p>{reply.reply}</p>
+
+                                            <p><h5>{reply.seeker_name}</h5>
+                                                <h5>Title: {reply.post_title}</h5>
+
+                                                <Badge bg="success">{reply.post_category}</Badge>
+
+                                                <p className="mt-3" style={{ fontWeight: "bold" }}> {reply.post_description}</p>
+
+                                                <p className="mt-3" style={{ color: "Red", fontWeight: "bold" }}> Reply: </p>{reply.reply}
+                                            </p>
                                         )}
 
                                         {reply.share_contact && (
@@ -584,7 +613,7 @@ function MentorProfile() {
                                                 })
 
                                             }}>Edit</Button>
-                                            <Button size="sm" variant="danger" className="ms-2" onClick={() => handleDeleteReply(reply.id)} >Delete</Button>
+                                            <Button size="sm" variant="danger" className="ms-2" onClick={() => confirmDeleteReply(reply.id)} >Delete</Button>
                                         </div>
                                     </Card.Body>
                                 </Card>
@@ -594,6 +623,28 @@ function MentorProfile() {
                 </Card>
 
             </Container>
+
+            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete Reply</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    Are you sure you want to delete this reply?
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                        Cancel
+                    </Button>
+
+                    <Button variant="danger" onClick={handleDeleteReply}>
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+
 
         </>
     )
