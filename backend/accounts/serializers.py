@@ -100,22 +100,41 @@ class SeekerProfileSerializer(serializers.ModelSerializer):
         return instance
 
 
-class AnswerSeekerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AnswerSeeker
-        fields = ['id', 'title', 'description', 'category', 'status', 'created_at']
-        read_only_fields = ['id', 'status', 'created_at']
 
 
 #------------------------for mentor profile------------------
 class MentorProfileSerializer(serializers.ModelSerializer):
 
+    full_name = serializers.CharField(source='user.full_name', read_only=True)
+    location = serializers.CharField(
+        source='user.location',
+        required=False,
+        allow_blank=True
+    )
     class Meta:
         model = MentorProfile
         fields = '__all__'
         read_only_fields = ['id', 'user', 'points', 'badge_level']
 
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', {})
+
+        if 'location' in user_data:
+            instance.user.location = user_data['location']
+            instance.user.save()
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        return instance
+
 class MentorReplySerializer(serializers.ModelSerializer):
+    post_title = serializers.CharField(source='post.title', read_only=True)
+    seeker_name = serializers.CharField(source='post.seeker.full_name', read_only=True)
+    post_description = serializers.CharField(source="post.description", read_only=True)
+    post_category = serializers.CharField(source="post.category", read_only=True)
+    mentor_name = serializers.CharField(source='mentor.full_name', read_only=True)
 
     class Meta:
         model = MentorReply
@@ -126,3 +145,21 @@ class MentorReplySerializer(serializers.ModelSerializer):
             if obj.share_contact:
                 return obj.contact_info
             return ""
+
+class AnswerSeekerSerializer(serializers.ModelSerializer):
+    seeker_name = serializers.CharField(source='seeker.full_name', read_only=True)
+    replied = serializers.SerializerMethodField()
+    replies = MentorReplySerializer(many=True, read_only=True)
+    class Meta:
+
+        model = AnswerSeeker
+        fields = ['id', 'title', 'description', 'category', 'status', 'created_at','seeker_name','replied','replies']
+        read_only_fields = ['id', 'status', 'created_at']
+
+    def get_replied(self, obj):
+        request = self.context.get("request")
+
+        if not request or request.user.is_anonymous:
+            return False
+
+        return obj.replies.filter(mentor=request.user).exists()

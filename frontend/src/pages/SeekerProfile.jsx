@@ -96,14 +96,15 @@ function SeekerProfile() {
       })
     } catch (error) {
       console.log("Error fetching seeker profile:", error)
-      
-      
+
+
     }
   }
 
   const fetchPosts = async () => {
     try {
       const res = await getSeekerPosts()
+      console.log("posts", res.data[0].replies);
       setPosts(res.data)
     } catch (error) {
       console.log("Error fetching posts:", error)
@@ -125,7 +126,7 @@ function SeekerProfile() {
     try {
       console.log("Sending to backend:", profileForm.interests);
       const res = await updateSeekerProfile(profileForm)
-      
+
       setProfile(res.data)
 
       localStorage.setItem("location", res.data.location || "")
@@ -148,6 +149,7 @@ function SeekerProfile() {
     e.preventDefault()
 
     try {
+
       if (editingPostId) {
         const res = await updateSeekerPost(editingPostId, postForm)
         setPosts(posts.map(post => post.id === editingPostId ? res.data : post))
@@ -428,6 +430,8 @@ function SeekerProfile() {
                     {editingPostId ? 'Update Post' : 'Post Question'}
                   </Button>
                 </Form>
+
+
               </Card.Body>
             </Card>
 
@@ -435,7 +439,7 @@ function SeekerProfile() {
             <Card className="shadow-sm border-0 mb-4">
               <Card.Body>
                 <div className="d-flex justify-content-between align-items-center mb-3">
-                  <h5 className="fw-bold mb-0">Latest Learning Needs</h5>
+                  <h5 className="fw-bold mb-0">Latest Learning Requests</h5>
 
                   <Form.Select
                     style={{ width: '220px' }}
@@ -484,6 +488,46 @@ function SeekerProfile() {
                             </Button>
                           </div>
                         </div>
+                        
+
+                        <h6 className="mt-3">Replies</h6>
+                        
+
+                        {post.replies.length === 0 ? (
+
+                          <p className="text-muted">
+                            No replies yet.
+                          </p>
+
+                        ) : (
+
+                          post.replies.map(reply => (
+
+                            <Card key={reply.id} className="mt-2">
+
+                              <Card.Body>
+
+                                <strong>{reply.mentor_name}</strong>
+
+                                <p>{reply.reply}</p>
+
+                                {reply.share_contact && (
+
+                                  <Badge bg="success">
+
+                                    {reply.contact_info}
+
+                                  </Badge>
+
+                                )}
+
+                              </Card.Body>
+
+                            </Card>
+
+                          ))
+
+                        )}
                       </Card.Body>
                     </Card>
                   ))
@@ -507,7 +551,7 @@ function SeekerProfile() {
                       key={item}
                       className="badge bg-danger-subtle text-danger border border-danger"
                     >
-                      
+
                       {item}
                     </span>
                   ))}

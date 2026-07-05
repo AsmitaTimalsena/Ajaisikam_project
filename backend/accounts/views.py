@@ -169,7 +169,7 @@ class MentorRecommendedPostsView(APIView):
 
     def get(self, request):
         posts = AnswerSeeker.objects.filter(status='OPEN').order_by('-created_at')
-        serializer = AnswerSeekerSerializer(posts, many=True)
+        serializer = AnswerSeekerSerializer(posts, many=True, context={'request':request})
         return Response(serializer.data)
     
     
