@@ -105,10 +105,29 @@ class SeekerProfileSerializer(serializers.ModelSerializer):
 #------------------------for mentor profile------------------
 class MentorProfileSerializer(serializers.ModelSerializer):
 
+    full_name = serializers.CharField(source='user.full_name', read_only=True)
+    location = serializers.CharField(
+        source='user.location',
+        required=False,
+        allow_blank=True
+    )
     class Meta:
         model = MentorProfile
         fields = '__all__'
         read_only_fields = ['id', 'user', 'points', 'badge_level']
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', {})
+
+        if 'location' in user_data:
+            instance.user.location = user_data['location']
+            instance.user.save()
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        return instance
 
 class MentorReplySerializer(serializers.ModelSerializer):
     post_title = serializers.CharField(source='post.title', read_only=True)

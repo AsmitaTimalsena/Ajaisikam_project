@@ -123,6 +123,7 @@ function MentorProfile() {
 
             const res = await updateMentorProfile(profileForm)
 
+            console.log(res.data);
             setProfile(res.data)
 
             localStorage.setItem('location', res.data.location || '')
@@ -236,7 +237,7 @@ function MentorProfile() {
                             <Col md={7}>
                                 <h3 className="fw-bold">{fullName}</h3>
                                 <p className="text-muted mb-1">Role: {role}</p>
-                                <p className="text-muted mb-1">Location: {location}</p>
+                                <p className="text-muted mb-1">Location: {profile?.location || "Not added"}</p>
                                 <p>{profile?.bio || "No bio added yet."}</p>
                             </Col>
 

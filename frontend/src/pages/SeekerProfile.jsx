@@ -488,10 +488,10 @@ function SeekerProfile() {
                             </Button>
                           </div>
                         </div>
-                        console.log("Post:", post.title);
-                        console.log("Replies:", post.replies);
+                        
 
                         <h6 className="mt-3">Replies</h6>
+                        
 
                         {post.replies.length === 0 ? (
 
