@@ -150,10 +150,11 @@ class AnswerSeekerSerializer(serializers.ModelSerializer):
     seeker_name = serializers.CharField(source='seeker.full_name', read_only=True)
     replied = serializers.SerializerMethodField()
     replies = MentorReplySerializer(many=True, read_only=True)
+    is_rural = serializers.BooleanField( source= 'seeker.seeker_profile.is_rural', read_only=True)
     class Meta:
 
         model = AnswerSeeker
-        fields = ['id', 'title', 'description', 'category', 'status', 'created_at','seeker_name','replied','replies']
+        fields = ['id', 'title', 'description', 'category', 'status', 'created_at','seeker_name','replied','replies','is_rural']
         read_only_fields = ['id', 'status', 'created_at']
 
     def get_replied(self, obj):

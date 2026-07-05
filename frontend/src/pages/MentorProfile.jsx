@@ -238,7 +238,7 @@ function MentorProfile() {
                                 <h3 className="fw-bold">{fullName}</h3>
                                 <p className="text-muted mb-1">Role: {role}</p>
                                 <p className="text-muted mb-1">Location: {profile?.location || "Not added"}</p>
-                                <p>{profile?.bio || "No bio added yet."}</p>
+                                <p><strong>Bio: </strong>{profile?.bio || "No bio added yet."}</p>
                             </Col>
 
                             <Col md={3}>
@@ -375,7 +375,7 @@ function MentorProfile() {
 
                                     {profile?.expertise?.map(skill => (
 
-                                        <Badge key={skill} bg="success">
+                                        <Badge key={skill} className="badge bg-danger-subtle text-danger border border-danger">
                                             {skill}
                                         </Badge>
 
@@ -450,20 +450,24 @@ function MentorProfile() {
 
                                     <Card.Body>
 
-                                        <h5>{post.seeker_name}</h5>
+                                        <div className="d-flex align-items-center gap-2">
+                                            <h5 className="mb-0">{post.seeker_name}</h5>
+
+                                            {post.is_rural && (
+                                                <span className="badge bg-warning-subtle text-dark border border-warning">
+                                                    Remote Student
+                                                </span>
+                                            )}
+                                        </div>
                                         <h5>Title: {post.title}</h5>
 
                                         <Badge bg="success">{post.category}</Badge>
-                                        {post.replied ? (
+                                        {post.replied && (
                                             <Badge bg="warning" className="ms-2" text="dark">Replied
                                             </Badge>
-                                        ) : (
-                                            <Button
-                                                variant="outline-success"
-                                                onClick={() => setReplyingPostId(post.id)}
-                                            >Reply </Button>
-                                            
-                                        )}
+                                        )
+
+                                        }
 
 
                                         <p className="mt-3">{post.description}</p>
@@ -587,19 +591,26 @@ function MentorProfile() {
                                             </>
                                         ) : (
 
-                                            <p><h5>{reply.seeker_name}</h5>
-                                                <h5>Title: {reply.post_title}</h5>
+                                            <p>
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <h5 className="mb-0">{reply.seeker_name}</h5>
 
-                                                <Badge bg="success">{reply.post_category}</Badge>
+                                                    {reply.is_rural && (
+                                                        <span className="badge bg-warning-subtle text-dark border border-warning">
+                                                            Remote Student
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <h5>Title: {reply.post_title}</h5>                                        
 
-                                                <p className="mt-3" style={{ fontWeight: "bold" }}> {reply.post_description}</p>
+                                                <p className="mt-3"><strong>Description: </strong> {reply.post_description} <Badge bg="success">{reply.post_category}</Badge></p>
 
-                                                <p className="mt-3" style={{ color: "Red", fontWeight: "bold" }}> Reply: </p>{reply.reply}
+                                                <p > <strong className="mt-3" style={{ color: "Red" }}> Reply:</strong>  {reply.reply} </p>
                                             </p>
                                         )}
 
                                         {reply.share_contact && (
-                                            <Badge bg="success">Contact Shared</Badge>
+                                            <Badge className="badge bg-success-subtle text-success border border-success">Contact Shared</Badge>
                                         )}
 
                                         <div className="mt-3">
