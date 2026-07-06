@@ -19,6 +19,7 @@ function SeekerProfile() {
   const [selectedPostId, setSelectedPostId] = useState(null);
 
   const [showProfileForm, setShowProfileForm] = useState(false)
+  const [postWarning, setPostWarning] = useState('')
 
   const [profileForm, setProfileForm] = useState({
     location: '',
@@ -154,9 +155,17 @@ function SeekerProfile() {
         const res = await updateSeekerPost(editingPostId, postForm)
         setPosts(posts.map(post => post.id === editingPostId ? res.data : post))
         setEditingPostId(null)
+        setPostWarning('')
       } else {
         const res = await createSeekerPost(postForm)
         setPosts([res.data, ...posts])
+
+        if (res.data.warning) {
+          setPostWarning(res.data.warning)
+        }
+        else {
+          setPostWarning('')
+        }
       }
 
       setPostForm({
@@ -178,6 +187,18 @@ function SeekerProfile() {
     })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+
+  const handleCancelEdit = () => {
+    setEditingPostId(null)
+
+    setPostForm({
+      title: '',
+      description: '',
+      category: categories[0]
+    })
+  }
+
+
 
   const openDeleteModal = (postId) => {
     setSelectedPostId(postId);
@@ -426,9 +447,17 @@ function SeekerProfile() {
                     </Form.Select>
                   </Form.Group>
 
-                  <Button variant="success" type="submit">
-                    {editingPostId ? 'Update Post' : 'Post Question'}
-                  </Button>
+                  <div className="d-flex gap-2">
+                    <Button variant="success" type="submit">
+                      {editingPostId ? 'Update Post' : 'Post Question'}
+                    </Button>
+
+                    {editingPostId && (
+                      <Button variant="outline-secondary" type="button" onClick={handleCancelEdit} >
+                        Cancel
+                      </Button>
+                    )}
+                  </div>
                 </Form>
 
 
@@ -488,10 +517,23 @@ function SeekerProfile() {
                             </Button>
                           </div>
                         </div>
-                        
+                        {/* AI confidence warning */}
+                        {postWarning && (
+                          <div className="alert alert-warning d-flex align-items-start gap-2 mt-3 mb-0">
+                            <span>⚠️</span>
+                            <div>
+                              <strong>Tip:</strong> {postWarning}
+                              <br />
+                              <small className="text-muted">
+                                Edit your post anytime to improve your mentor matches.
+                              </small>
+                            </div>
+                          </div>
+                        )}
+
 
                         <h6 className="mt-3">Replies</h6>
-                        
+
 
                         {post.replies.length === 0 ? (
 
