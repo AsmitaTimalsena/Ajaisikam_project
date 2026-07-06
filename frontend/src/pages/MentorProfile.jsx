@@ -462,6 +462,18 @@ function MentorProfile() {
                                         <h5>Title: {post.title}</h5>
 
                                         <Badge bg="success">{post.category}</Badge>
+
+                                        { post.ai_override && post.matched_categories?.map(cat => (                                                                            
+                                            <Badge key={cat} bg='danger' className='ms-2'> AI Predicted: {cat} 
+                                            </Badge>
+                                        ) )
+                                        }
+
+                                        {/* { post.ai_confidence && (
+                                            <Badge bg='secondary' className='ms-2'> AI Confidence: {Math.round(post.ai_confidence * 100)}% 
+                                            </Badge>
+                                        )} */}
+                                      
                                         {post.replied && (
                                             <Badge bg="warning" className="ms-2" text="dark">Replied
                                             </Badge>
