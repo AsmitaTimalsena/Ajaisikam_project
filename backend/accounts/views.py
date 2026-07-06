@@ -76,8 +76,27 @@ class AnswerSeekerListCreateView(APIView):
     def post(self, request):
         serializer = AnswerSeekerSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(seeker=request.user)
-            return Response(serializer.data, status=201)
+            post = serializer.save(seeker=request.user)
+
+            # To stop server lagging,  run AI once at creation and save to database
+            top_categories, ai_override, confidence = get_ai_category(
+                post.title,
+                post.description,
+                post.category
+            )
+            post.ai_categories = top_categories
+            post.ai_confidence = confidence
+            post.save()
+            response_data = serializer.data
+
+            text = f"{post.title} {post.description}"
+
+            if len(text.split()) < 20:
+                response_data["warning"] = (
+                    "Your description seems a bit short. Adding more details will help us match you with the right mentor."
+                )
+
+            return Response(response_data, status=201)
         return Response(serializer.errors, status=400)
 
 
@@ -92,7 +111,18 @@ class AnswerSeekerDetailView(APIView):
 
         serializer = AnswerSeekerSerializer(post, data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.save()
+            post = serializer.save()
+
+            #Re-run AI when post is edited
+            top_categories, ai_override, confidence = get_ai_category(
+                post.title,
+                post.description,
+                post.category
+            )
+            post.ai_categories = top_categories
+            post.ai_confidence = confidence
+            post.save()
+
             return Response(serializer.data, status=200)
         return Response(serializer.errors, status=400)
 
@@ -180,17 +210,23 @@ class MentorRecommendedPostsView(APIView):
         matched_posts = []
 
         for post in all_posts:
-            final_category, ai_override, confidence = get_ai_category(
-                post.title, post.description, post.category
-            )
-            if final_category in mentor_expertise:
-                serializer = AnswerSeekerSerializer(post, context={'request':request})
+        # ai_categories is  a list e.g. ["BIOLOGY", "RESEARCH"]
+            ai_categories = post.ai_categories if post.ai_categories else [post.category]
+
+            # Show post if mentor expertise matches ANY of the top categories
+            if any(cat in mentor_expertise for cat in ai_categories):
+                serializer = AnswerSeekerSerializer(post, context={'request': request})
                 post_data = serializer.data
-                post_data['ai_predicted_category']= final_category
-                post_data['ai_confidence']= confidence
-                post_data['ai_override']= ai_override
+                matched_categories = [
+                    cat for cat in ai_categories
+                    if cat in mentor_expertise
+                ]
+
+                post_data['matched_categories'] = matched_categories
+                post_data['ai_confidence'] = post.ai_confidence
+                post_data['ai_override'] = post.category not in ai_categories
                 matched_posts.append(post_data)
-        
+
         return Response(matched_posts)
     
     
