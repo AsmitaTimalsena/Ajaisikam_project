@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Container, Form, Button, Card, Alert } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { registerUser } from '../services/authService'
+import zxcvbn from "zxcvbn";
+import ProgressBar from 'react-bootstrap/ProgressBar';
 
 function RegisterPage() {
   const navigate = useNavigate()
@@ -24,6 +26,23 @@ function RegisterPage() {
       [e.target.name]: e.target.value,
     })
   }
+  const strength = zxcvbn(formData.password);
+  const colors = [
+    "danger",   // red
+    "warning",  // yellow
+    "warning",  // orange-ish
+    "info",     // blue
+    "success"   // green
+  ];
+
+  const labels = [
+    "Very Weak",
+    "Weak",
+    "Fair",
+    "Good",
+    "Strong"
+  ];
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -55,55 +74,35 @@ function RegisterPage() {
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Label>Full Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="full_name"
-              value={formData.full_name}
-              onChange={handleChange}
-              required
-            />
+            <Form.Control type="text" name="full_name" value={formData.full_name} onChange={handleChange} required />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Username</Form.Label>
-            <Form.Control
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-            />
+            <Form.Control type="text" name="username" value={formData.username} onChange={handleChange} required />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Email</Form.Label>
-            <Form.Control
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
+            <Form.Control type="email" name="email" value={formData.email} onChange={handleChange} required />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
+            <Form.Control type="password" name="password" value={formData.password} onChange={handleChange} minLength={8} required />
+            {formData.password && (
+              <ProgressBar
+                now={(strength.score + 1) * 20}
+                variant={colors[strength.score]}
+                label={labels[strength.score]}
+                animated
+              />
+            )}
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Role</Form.Label>
-            <Form.Select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-            >
+            <Form.Select name="role" value={formData.role} onChange={handleChange}>
               <option value="SEEKER">Seeker</option>
               <option value="MENTOR">Mentor</option>
               <option value="BOTH">Both</option>
@@ -112,12 +111,7 @@ function RegisterPage() {
 
           <Form.Group className="mb-4">
             <Form.Label>Location</Form.Label>
-            <Form.Control
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-            />
+            <Form.Control type="text" name="location" value={formData.location} onChange={handleChange} />
           </Form.Group>
 
           <Button type="submit" variant="success" className="w-100">

@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions, status
 from django.shortcuts import get_object_or_404
+from .ai_matching import get_ai_category
 
 from .serializers import (
     RegisterSerializer,
@@ -168,9 +169,29 @@ class MentorRecommendedPostsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        posts = AnswerSeeker.objects.filter(status='OPEN').order_by('-created_at')
-        serializer = AnswerSeekerSerializer(posts, many=True, context={'request':request})
-        return Response(serializer.data)
+        # posts = AnswerSeeker.objects.filter(status='OPEN').order_by('-created_at')
+        # serializer = AnswerSeekerSerializer(posts, many=True, context={'request':request})
+        # return Response(serializer.data)
+
+        mentor_pfoile = request.user.mentor_profile
+        mentor_expertise = mentor_pfoile.expertise 
+        all_posts = AnswerSeeker.objects.filter(status="OPEN").order_by('-created_at')
+
+        matched_posts = []
+
+        for post in all_posts:
+            final_category, ai_override, confidence = get_ai_category(
+                post.title, post.description, post.category
+            )
+            if final_category in mentor_expertise:
+                serializer = AnswerSeekerSerializer(post, context={'request':request})
+                post_data = serializer.data
+                post_data['ai_predicted_category']= final_category
+                post_data['ai_confidence']= confidence
+                post_data['ai_override']= ai_override
+                matched_posts.append(post_data)
+        
+        return Response(matched_posts)
     
     
 class MentorReplyDetailView(APIView):
