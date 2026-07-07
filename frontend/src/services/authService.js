@@ -53,8 +53,8 @@ export const deleteReply = (id) =>API.delete(`mentor/replies/${id}/`)
 //to see replies
 export const getMyReplies = () =>API.get("mentor/replies/")
 
-
-
+// reccomend mentors to seekers by matching
+export const getRecommendedMentors = () => API.get("seeker/recommended-mentors/")
 
 
 

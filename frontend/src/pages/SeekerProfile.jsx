@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Container, Row, Col, Card, Button, Form, Badge, ProgressBar, Modal } from 'react-bootstrap'
 import ProfileNavbar from '../components/ProfileNavbar'
+import RecommendedMentors from '../components/RecommendedMentors'
 import {
   getSeekerProfile,
   updateSeekerProfile,
@@ -623,32 +624,7 @@ function SeekerProfile() {
               </Card.Body>
             </Card>
 
-            <Card className="shadow-sm border-0 mb-4">
-              <Card.Body>
-                <h5 className="fw-bold" style={{ color: '#4E220F' }} >Recommended Mentors</h5>
-
-                <Card className="mb-2 bg-light border-0">
-                  <Card.Body>
-                    <h6 className="mb-1">Mentor 1</h6>
-                    <small className="text-muted">Web Development</small>
-                  </Card.Body>
-                </Card>
-
-                <Card className="mb-2 bg-light border-0">
-                  <Card.Body>
-                    <h6 className="mb-1">Mentor 2</h6>
-                    <small className="text-muted">AI / ML</small>
-                  </Card.Body>
-                </Card>
-
-                <Card className="bg-light border-0">
-                  <Card.Body>
-                    <h6 className="mb-1">Mentor 3</h6>
-                    <small className="text-muted">Career Guidance</small>
-                  </Card.Body>
-                </Card>
-              </Card.Body>
-            </Card>
+            <RecommendedMentors />
           </Col>
         </Row>
       </Container >

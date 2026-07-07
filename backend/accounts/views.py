@@ -272,3 +272,44 @@ class MentorMyRepliesView(APIView):
 
         serializer = MentorReplySerializer(replies, many=True)
         return Response(serializer.data)
+
+
+class SeekerRecommendedMentorsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        # first get seekers interest
+        try:
+            seeker_profile = request.user.seeker_profile
+            seeker_interests = seeker_profile.interests
+        except SeekerProfile.DoesNotExist:
+            return Response({"error": "Seeker profile not found."}, status=404)
+
+        if not seeker_interests:
+            return Response([])
+
+        # match with expertise
+        matched_mentors = []
+
+        mentors = MentorProfile.objects.all()
+
+        for mentor in mentors:
+            overlap = [cat for cat in mentor.expertise if cat in seeker_interests]
+
+            if overlap:
+                matched_mentors.append({
+                    "id": str(mentor.id),
+                    "full_name": mentor.user.full_name,
+                    "expertise": mentor.expertise,
+                    "experience": mentor.experience,
+                    "bio": mentor.bio,
+                    "badge_level": mentor.badge_level,
+                    "points": mentor.points,
+                    "matched_on": overlap  # which categories matched
+                })
+
+        # higher badge mentors first ==> sorting
+        matched_mentors.sort(key=lambda x: x["points"], reverse=True)
+
+        # return top 3 only
+        return Response(matched_mentors[:3])
