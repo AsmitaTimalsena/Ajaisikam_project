@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import Register, Login, Logout, SeekerProfileView, AnswerSeekerListCreateView, AnswerSeekerDetailView, MentorProfileView, MentorReplyDetailView, MentorReplyListCreateView
-from .views import MentorRecommendedPostsView, MentorMyRepliesView
+from .views import MentorRecommendedPostsView, MentorMyRepliesView, SeekerRecommendedMentorsView
 urlpatterns = [
     path('register/', Register.as_view(), name='register'),
     path('login/', Login.as_view(), name='login'),
@@ -20,8 +20,8 @@ urlpatterns = [
     path('mentor/posts/<uuid:post_id>/replies/', MentorReplyListCreateView.as_view(),  name='mentor-replies'),
 
     path('mentor/replies/<uuid:pk>/', MentorReplyDetailView.as_view()),
-    path('mentor/replies/',MentorMyRepliesView.as_view(),name='mentor-my-replies'
-),
+    path('mentor/replies/',MentorMyRepliesView.as_view(),name='mentor-my-replies'),
+    path('seeker/recommended-mentors/', SeekerRecommendedMentorsView.as_view(), name='seeker-recommended-mentors'),
 
 ]
 
