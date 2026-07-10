@@ -157,6 +157,7 @@ class AnswerSeekerSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'category', 'status', 'created_at','seeker_name','replied','replies','is_rural']
         read_only_fields = ['id', 'status', 'created_at']
 
+    
     def get_replied(self, obj):
         request = self.context.get("request")
 

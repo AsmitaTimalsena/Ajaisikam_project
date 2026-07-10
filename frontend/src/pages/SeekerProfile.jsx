@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Container, Row, Col, Card, Button, Form, Badge, ProgressBar, Modal } from 'react-bootstrap'
+import { Container, Row, Col, Card, Button, Form, Badge, ProgressBar, Modal, Alert } from 'react-bootstrap'
 import ProfileNavbar from '../components/ProfileNavbar'
 import RecommendedMentors from '../components/RecommendedMentors'
 import {
@@ -465,6 +465,18 @@ function SeekerProfile() {
               </Card.Body>
             </Card>
 
+            {/* AI confidence warning */}
+            {postWarning && (
+              <Alert
+                variant="warning"
+                dismissible
+                onClose={() => setPostWarning("")}
+                className="mb-3"
+              >
+                <strong>Tip:</strong> {postWarning}
+              </Alert>
+            )}
+
             {/* latest posts */}
             <Card className="shadow-sm border-0 mb-4">
               <Card.Body>
@@ -518,20 +530,6 @@ function SeekerProfile() {
                             </Button>
                           </div>
                         </div>
-                        {/* AI confidence warning */}
-                        {postWarning && (
-                          <div className="alert alert-warning d-flex align-items-start gap-2 mt-3 mb-0">
-                            <span>⚠️</span>
-                            <div>
-                              <strong>Tip:</strong> {postWarning}
-                              <br />
-                              <small className="text-muted">
-                                Edit your post anytime to improve your mentor matches.
-                              </small>
-                            </div>
-                          </div>
-                        )}
-
 
                         <h6 className="mt-3">Replies</h6>
 

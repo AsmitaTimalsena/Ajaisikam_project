@@ -1,8 +1,10 @@
 import { Container, Row, Col } from 'react-bootstrap'
+import NepalIcon from "../assets/nepal.png"
+
 
 // object array
 const highlights = [
-  { icon: '🇳🇵', title: 'Built for Nepal', description: 'Designed around the real challenges Nepali students face every day.' },
+  { image: NepalIcon, title: 'Built for Nepal', description: 'Designed around the real challenges Nepali students face every day.' },
   { icon: '🤖', title: 'AI-Powered Matching', description: 'Smart matching connects you with the right person, not just any random reply.' },
   { icon: '🆓', title: 'Free for Students', description: 'No fees, no subscriptions. Guidance should be accessible to everyone.' },
   { icon: '🌄', title: 'Supporting Rural Students', description: 'Special focus on students from remote areas who have less access to networks.' },
@@ -19,7 +21,17 @@ function WhyNepalMentor() {
           {highlights.map((item) => (
             <Col md={3} sm={6} key={item.title}>
               <div className="text-center p-3">
-                <div style={{ fontSize: '2.5rem' }} className="mb-3">{item.icon}</div>
+                <div className="mb-3">
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      style={{ width: "50px", height: "50px", objectFit: "contain" }}
+                    />
+                  ) : (
+                    <div style={{ fontSize: "2.5rem" }}>{item.icon}</div>
+                  )}
+                </div>
                 <h5 className="fw-bold">{item.title}</h5>
                 <p className="text-muted small">{item.description}</p>
               </div>

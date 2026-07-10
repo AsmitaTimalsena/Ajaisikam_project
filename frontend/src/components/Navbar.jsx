@@ -1,5 +1,6 @@
 import { Navbar, Nav, Container, Button } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
+import Logo from "../assets/ajaisikam.png"
 
 function AppNavbar() {
     const navigate = useNavigate() //here useNavigate is a hook it acts like a link to another page, navigate is function and 
@@ -10,6 +11,8 @@ function AppNavbar() {
             <Container>
 
                 <Navbar.Brand href="/" className="fw-bold text-success fs-4">
+                    < img src={Logo} alt="Ajaisikam" width = "90" height="65" className='me-2'/>
+                    
                     अजै सिकम : Mentoring Platform
                 </Navbar.Brand>
 
