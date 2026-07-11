@@ -16,6 +16,7 @@ function MentorProfile() {
     const [replyingPostId, setReplyingPostId] = useState(null)
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [selectedReplyId, setSelectedReplyId] = useState(null)
+    const [selectedExpertise, setSelectedExpertise] = useState("ALL")
 
 
     const [showProfileForm, setShowProfileForm] = useState(false)
@@ -207,8 +208,35 @@ function MentorProfile() {
         }
     }
 
+    const filteredPosts = posts.filter(post => {
+        if (selectedExpertise === "ALL") return true;
 
+        if (post.category === selectedExpertise) return true;
 
+        if (
+            post.category === "OTHER" &&
+            post.matched_categories?.includes(selectedExpertise)
+        ) {
+            return true;
+        }
+
+        return false;
+    });
+    const filteredReplies = selectedExpertise === "ALL"
+        ? myReplies
+        : myReplies.filter(reply =>
+            reply.post_category === selectedExpertise ||
+            reply.matched_categories?.includes(selectedExpertise)
+        )
+
+    // check in console what is being passed
+    // posts.forEach(post => {
+    //     console.log(
+    //         post.title,
+    //         post.category,
+    //         post.matched_categories
+    //     );
+    // });
 
     if (loading) {
         return <h3 className="text-center mt-5">Loading...</h3>
@@ -373,12 +401,23 @@ function MentorProfile() {
 
                                 <div className="d-flex flex-wrap gap-2 mt-3">
 
-                                    {profile?.expertise?.map(skill => (
+                                    <Badge
+                                        bg={selectedExpertise === "ALL" ? "danger" : "secondary"}
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => setSelectedExpertise("ALL")}
+                                    >
+                                        ALL
+                                    </Badge>
 
-                                        <Badge key={skill} className="badge bg-danger-subtle text-danger border border-danger">
+                                    {profile?.expertise?.map(skill => (
+                                        <Badge
+                                            key={skill}
+                                            style={{ cursor: "pointer" }}
+                                            bg={selectedExpertise === skill ? "danger" : "secondary"}
+                                            onClick={() => setSelectedExpertise(skill)}
+                                        >
                                             {skill}
                                         </Badge>
-
                                     ))}
 
                                     {profile?.custom_expertise && (
@@ -444,7 +483,7 @@ function MentorProfile() {
 
                         ) : (
 
-                            posts.map(post => (
+                            filteredPosts.map(post => (
 
                                 <Card key={post.id} className="mb-3">
 
@@ -463,17 +502,17 @@ function MentorProfile() {
 
                                         <Badge bg="success">{post.category}</Badge>
 
-                                        { post.ai_override && post.matched_categories?.map(cat => (                                                                            
-                                            <Badge key={cat} bg='danger' className='ms-2'> AI Predicted: {cat} 
+                                        {post.ai_override && post.matched_categories?.map(cat => (
+                                            <Badge key={cat} bg='danger' className='ms-2'> AI Predicted: {cat}
                                             </Badge>
-                                        ) )
+                                        ))
                                         }
 
                                         {/* { post.ai_confidence && (
                                             <Badge bg='secondary' className='ms-2'> AI Confidence: {Math.round(post.ai_confidence * 100)}% 
                                             </Badge>
                                         )} */}
-                                      
+
                                         {post.replied && (
                                             <Badge bg="warning" className="ms-2" text="dark">Replied
                                             </Badge>
@@ -579,7 +618,7 @@ function MentorProfile() {
                         {myReplies.length === 0 ? (
                             <p className="text-muted">You haven't replied to any posts yet.</p>
                         ) : (
-                            myReplies.map(reply => (
+                            filteredReplies.map(reply => (
                                 <Card key={reply.id} className="mb-3">
                                     <Card.Body>
                                         {editingReplyId === reply.id ? (
@@ -613,7 +652,7 @@ function MentorProfile() {
                                                         </span>
                                                     )}
                                                 </div>
-                                                <h5>Title: {reply.post_title}</h5>                                        
+                                                <h5>Title: {reply.post_title}</h5>
 
                                                 <p className="mt-3"><strong>Description: </strong> {reply.post_description} <Badge bg="success">{reply.post_category}</Badge></p>
 
