@@ -135,6 +135,7 @@ class MentorReplySerializer(serializers.ModelSerializer):
     post_description = serializers.CharField(source="post.description", read_only=True)
     post_category = serializers.CharField(source="post.category", read_only=True)
     mentor_name = serializers.CharField(source='mentor.full_name', read_only=True)
+    matched_categories = serializers.ListField(source="post.ai_categories", read_only=True)
 
     class Meta:
         model = MentorReply
