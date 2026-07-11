@@ -1,6 +1,7 @@
 import { Navbar, Container, Button } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { logoutUser } from '../services/authService'
+import Logo from "../assets/ajaisikam.png"
 
 function ProfileNavbar() {
   const navigate = useNavigate()
@@ -26,6 +27,7 @@ function ProfileNavbar() {
     <Navbar bg="white" expand="lg" className="shadow-sm py-3">
       <Container>
         <Navbar.Brand className="fw-bold text-success fs-4">
+          < img src={Logo} alt="Ajaisikam" width = "90" height="65" className='me-2'/>
           अजै सिकम : Mentoring Platform
         </Navbar.Brand>
 
