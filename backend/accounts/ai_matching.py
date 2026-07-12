@@ -18,7 +18,14 @@ CATEGORY_DESCRIPTIONS = {
 
 THRESHOLD = 0.25
 
+def get_model():
+    global model
+    if model is None:
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+    return model
+
 def get_ai_category(title, description, user_selected_category):
+    model = get_model()
     text = f"{title}. {description}"
 
     post_embedding = model.encode(text, convert_to_tensor=True)
