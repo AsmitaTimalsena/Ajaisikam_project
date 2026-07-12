@@ -1,0 +1,1 @@
+web: gunicorn ajaisikam_project.wsgi
