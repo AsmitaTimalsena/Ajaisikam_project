@@ -1,6 +1,6 @@
 from sentence_transformers import SentenceTransformer, util
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
+model = None
 
 CATEGORY_DESCRIPTIONS = {
     "TECH": "programming, software development, Python, React, AWS, cloud computing, machine learning, IT, coding, software engineering, web development, database, API, DevOps, networking",
@@ -17,6 +17,12 @@ CATEGORY_DESCRIPTIONS = {
 }
 
 THRESHOLD = 0.25
+
+def get_model():
+    global model
+    if model is None:
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+    return model
 
 def get_ai_category(title, description, user_selected_category):
     text = f"{title}. {description}"
