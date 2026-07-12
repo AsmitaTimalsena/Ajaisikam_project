@@ -13,6 +13,10 @@ jobs:
     defaults:
       run:
         working-directory: backend
+    
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      ENV: development
 
     steps:
       - name: Checkout code
