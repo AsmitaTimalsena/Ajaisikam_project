@@ -3,6 +3,8 @@ import { Form, Button, Card, Container, Alert } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { loginUser } from '../services/authService'
 
+import { Link } from "react-router-dom";
+
 function LoginPage() {
   const navigate = useNavigate()
 
@@ -82,6 +84,17 @@ function LoginPage() {
           <Button type="submit" variant="success" className="w-100">
             Login
           </Button>
+          <p className="text-center mt-3 mb-0">
+            Don't have an account?{" "}
+            <Link
+              to="/register"
+              className="text-decoration-none fw-semibold"
+              style={{ color: "#0aac0a" }}
+            >
+              Register
+            </Link>
+          </p>
+
         </Form>
       </Card>
     </Container>

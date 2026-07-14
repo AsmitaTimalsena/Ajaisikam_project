@@ -554,7 +554,7 @@ function SeekerProfile() {
 
                                 {reply.share_contact && (
 
-                                  <Badge bg="success">
+                                  <Badge className="badge bg-danger-subtle text-danger border border-danger">
 
                                     {reply.contact_info}
 

@@ -10,7 +10,7 @@ const steps = [
   {
     number: '02',
     title: 'Post Your Request',
-    description: 'Describe what guidance you need in plain words. No formal writing required — just be honest.',
+    description: 'Describe what guidance you need or how you can help in plain words. No formal writing required, just be honest.',
   },
   {
     number: '03',

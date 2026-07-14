@@ -26,7 +26,7 @@ if ENV == 'production':
 else:
     load_dotenv('.env.development')
 
-
+HF_API_TOKEN = os.environ.get("HF_API_TOKEN")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
