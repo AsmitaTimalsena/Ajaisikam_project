@@ -25,3 +25,11 @@
 .about-carousel .carousel-indicators [data-bs-target] {
   background-color: #2e7d32;
 }
+
+/* adding badge color for mentors */
+
+.bronze-badge {
+    background-color: #E6B17E !important;
+    color: #5C3317 !important;
+    border: 1px solid #B87333;
+}

@@ -454,7 +454,10 @@ function MentorProfile() {
 
                                 <h5 style={{ color: "#4E220F" }}>Mentor Badge</h5>
 
-                                <Badge bg={badgeColor[profile?.badge_level]}>
+                                <Badge
+                                    bg={profile?.badge_level === "BRONZE" ? undefined : badgeColor[profile?.badge_level]}
+                                    className={profile?.badge_level === "BRONZE" ? "bronze-badge" : ""}
+                                >
                                     {profile?.badge_level}
                                 </Badge>
 

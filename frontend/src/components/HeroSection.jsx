@@ -36,7 +36,7 @@ function HeroSection() {
             </div>
             
             <p className="mt-4 text-muted small">
-                Special support available for students from rural and remote areas of Nepal
+               We believe learning should never be limited by location, access to mentors, or personal barriers.
             </p>
           </Col>
         </Row>

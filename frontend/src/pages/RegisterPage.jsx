@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { registerUser } from '../services/authService'
 import zxcvbn from "zxcvbn";
 import ProgressBar from 'react-bootstrap/ProgressBar';
+import { Link } from "react-router-dom";
 
 function RegisterPage() {
   const navigate = useNavigate()
@@ -58,8 +59,27 @@ function RegisterPage() {
         navigate('/login')
       }, 1500)
     } catch (err) {
-      console.log(err)
-      setError('Registration failed. Please check your details.')
+      console.log(err);
+
+      if (err.response && err.response.data) {
+        const data = err.response.data;
+
+        if (data.username) {
+          setError(data.username[0]);
+        } else if (data.email) {
+          setError(data.email[0]);
+        } else if (data.password) {
+          setError(data.password[0]);
+        } else if (data.detail) {
+          setError(data.detail);
+        } else if (data.message) {
+          setError(data.message);
+        } else {
+          setError("Registration failed. Please check your details.");
+        }
+      } else {
+        setError("Unable to connect to the server.");
+      }
     }
   }
 
@@ -105,7 +125,7 @@ function RegisterPage() {
             <Form.Select name="role" value={formData.role} onChange={handleChange}>
               <option value="SEEKER">Seeker</option>
               <option value="MENTOR">Mentor</option>
-              <option value="BOTH">Both</option>
+              {/* <option value="BOTH">Both</option> */}
             </Form.Select>
           </Form.Group>
 
@@ -117,6 +137,16 @@ function RegisterPage() {
           <Button type="submit" variant="success" className="w-100">
             Register
           </Button>
+          <p className="text-center mt-3 mb-0">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-decoration-none fw-semibold"
+              style={{ color: "#0aac0a" }}
+            >
+              Login
+            </Link>
+          </p>
         </Form>
       </Card>
     </Container>

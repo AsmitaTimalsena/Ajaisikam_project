@@ -25,7 +25,7 @@ function Footer() {
               <a href="/" className="text-secondary text-decoration-none">Home</a>
               <a href="#how-it-works" className="text-secondary text-decoration-none">How it works</a>
               <a href="/register" className="text-secondary text-decoration-none">Become a user</a>
-              <a href="/login" className="text-secondary text-decoration-none">Login</a>
+              
             </div>
           </Col>
 
@@ -33,10 +33,10 @@ function Footer() {
           <Col md={4}>
             <h6 className="fw-bold mb-3">Support</h6>
             <div className="d-flex flex-column gap-2">
-              <a href="#" className="text-secondary text-decoration-none">Terms</a>
+              
               <a href="/About" className="text-secondary text-decoration-none">About</a>
               <a href="#" className="text-secondary text-decoration-none">Contact Us</a>
-              <a href="#" className="text-secondary text-decoration-none">Privacy Policy</a>
+              <a href="/login" className="text-secondary text-decoration-none">Login</a>
               
             </div>
           </Col>
@@ -48,7 +48,7 @@ function Footer() {
         <Row className="align-items-center">
           <Col md={6} className="text-center text-md-start">
             <small className="text-secondary">
-              © {new Date().getFullYear()} AjaiSikam. Built with purpose
+              © {new Date().getFullYear()} AjaiSikam: Built with purpose by -  Asmita Timalsena
             </small>
           </Col>
 
