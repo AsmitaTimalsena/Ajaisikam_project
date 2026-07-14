@@ -1,4 +1,5 @@
 import { Container, Carousel, Card, Row, Col } from 'react-bootstrap'
+import Footer from '../components/Footer'
 
 function About() {
   return (
@@ -137,7 +138,9 @@ function About() {
           </Carousel.Item>
         </Carousel>
       </Container>
+      <Footer />
     </div>
+    
   )
 }
 
