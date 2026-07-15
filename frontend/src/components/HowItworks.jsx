@@ -1,6 +1,6 @@
 import { Container, Row, Col, Card } from 'react-bootstrap'
 
-// // we use array of objects to store data and use .map() to render them for easy anc clean code
+//we use array of objects to store data and use .map() to render them for easy anc clean code
 const steps = [
   {
     number: '01',
