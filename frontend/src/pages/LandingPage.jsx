@@ -17,7 +17,6 @@ function LandingPage(){
             <WhyAjaiSikam />
             <Footer />
 
-
         </div>
 
         
