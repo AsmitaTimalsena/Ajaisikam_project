@@ -35,7 +35,10 @@ export const getSeekerPosts = () => API.get('seeker/posts/')
 export const createSeekerPost = (data) => API.post('seeker/posts/', data)
 export const updateSeekerPost = (id, data) => API.put(`seeker/posts/${id}/`, data)
 export const deleteSeekerPost = (id) => API.delete(`seeker/posts/${id}/`)
-
+export const selectMentor = (postId, mentorId) =>API.post(`seeker/posts/${postId}/select-mentor/`, {
+        mentor_id: mentorId})
+        
+export const closePost = (postId)=>API.post(`seeker/posts/${postId}/close/`)
 
 //-------------------Mentor Profile APIs--------------
 // Mentor Profile

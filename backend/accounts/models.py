@@ -67,6 +67,7 @@ class AnswerSeeker(models.Model):
     ai_categories = models.JSONField(default=list) #for multiple categories showing 
     ai_confidence = models.FloatField(default=0.0)
     created_at = models.DateTimeField(auto_now_add=True)
+    selected_mentor = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="selected_posts")
 
     def __str__(self):
         return self.title

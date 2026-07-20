@@ -8,7 +8,7 @@ import {
   getSeekerPosts,
   createSeekerPost,
   updateSeekerPost,
-  deleteSeekerPost
+  deleteSeekerPost, selectMentor, closePost
 } from '../services/authService'
 
 function SeekerProfile() {
@@ -159,7 +159,8 @@ function SeekerProfile() {
         setPostWarning('')
       } else {
         const res = await createSeekerPost(postForm)
-        setPosts([res.data, ...posts])
+        await fetchPosts()
+        // setPosts([res.data, ...posts])
 
         if (res.data.warning) {
           setPostWarning(res.data.warning)
@@ -187,6 +188,8 @@ function SeekerProfile() {
       category: post.category
     })
     window.scrollTo({ top: 0, behavior: 'smooth' })
+    console.log("Title:", post.title);
+    console.log("Category:", post.category);
   }
 
   const handleCancelEdit = () => {
@@ -259,6 +262,20 @@ function SeekerProfile() {
     }
 
   }
+  const handleSelectMentor = async (postId, mentorId) => {
+    try {
+      await selectMentor(postId, mentorId)
+      await fetchPosts()
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const handleClosePost = async (postId) => {
+    await closePost(postId)
+    await fetchPosts()
+  }
+
   return (
     <>
       <ProfileNavbar />
@@ -505,12 +522,10 @@ function SeekerProfile() {
                       <Card.Body>
                         <div className="d-flex justify-content-between align-items-start">
                           <div>
-                            <h6 className="fw-bold">{post.title}</h6>
+                            <h6 className="fw-bold">Title: {post.title}</h6>
                             <Badge bg="success" className="mb-2">{post.category}</Badge>
                             <p className="mb-2">{post.description}</p>
-                            <Badge bg={getStatusBadge(post.status)}>
-                              Status: {post.status}
-                            </Badge>
+
                           </div>
 
                           <div className="d-flex gap-2">
@@ -530,6 +545,32 @@ function SeekerProfile() {
                             </Button>
                           </div>
                         </div>
+
+                        <Badge className="badge bg-danger-subtle text-danger border border-danger">
+                          Status: {post.status}
+                        </Badge>
+
+                        {/* Connected mentor */}
+                        {post.status === "CONNECTED" && (
+                          <div className="mt-2">
+                            {/* <Badge className="badge bg-danger-subtle text-danger border border-danger">
+                              Connected with {post.selected_mentor_name}
+                            </Badge> */}
+{/* 
+                            <Button
+                              size="sm"
+                              variant="success"
+                              className="ms-2"
+                              onClick={() => handleClosePost(post.id)}
+                            >
+                              Mark Resolved
+                            </Button> */}
+
+                          </div>
+                        )}
+
+                        
+                        
 
                         <h6 className="mt-3">Replies</h6>
 
@@ -551,6 +592,20 @@ function SeekerProfile() {
                                 <strong>{reply.mentor_name}</strong>
 
                                 <p>{reply.reply}</p>
+                                {post.status === "MATCHED" && (
+                                  <Button
+                                    size="sm"
+                                    className="mt-2 me-3" style={{
+                                      backgroundColor: "#D2B48C",
+                                      borderColor: "#6b3f06",
+                                      paddingRight: "20px",
+                                      paddingLeft: "20px"
+                                    }}
+                                    onClick={() => handleSelectMentor(post.id, reply.mentor)}
+                                  >
+                                    Select Mentor
+                                  </Button>
+                                )}
 
                                 {reply.share_contact && (
 
@@ -615,12 +670,12 @@ function SeekerProfile() {
               </Card.Body>
             </Card>
 
-            <Card className="shadow-sm border-0 mb-4">
+            {/* <Card className="shadow-sm border-0 mb-4">
               <Card.Body>
                 <h5 className="fw-bold" style={{ color: '#4E220F' }}>Requested Mentorship</h5>
                 <p className="text-muted mb-0">No mentorship requests yet</p>
               </Card.Body>
-            </Card>
+            </Card> */}
 
             <RecommendedMentors />
           </Col>

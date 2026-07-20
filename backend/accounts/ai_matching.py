@@ -1,6 +1,6 @@
 from huggingface_hub import InferenceClient
 import numpy as np
-import os, json
+import os, json, requests
 from pathlib import Path
 
 HF_API_TOKEN = os.environ.get("HF_API_TOKEN")
@@ -9,6 +9,12 @@ if not HF_API_TOKEN:
 
 BASE_DIR = Path(__file__).resolve().parent # to store the embeddings in json file for embeddings and optimize api calls
 EMBEDDINGS_FILE = BASE_DIR / "embeddings.json"
+
+API_URL = "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2/pipeline/feature-extraction"
+headers = {
+    "Authorization": f"Bearer {HF_API_TOKEN}",
+    "Content-Type": "application/json",
+}
 
 client = InferenceClient(
     provider="hf-inference",
@@ -52,24 +58,35 @@ def load_embeddings():
     except Exception as e:
         print(f"Could not load embeddings: {e}")
         return False
-    
 
 def get_embedding(text):
-    """
-    Get embedding from Hugging Face Inference API.
-    """
-
     try:
-        embedding = client.feature_extraction(
-            text,
-            model="sentence-transformers/all-MiniLM-L6-v2",
+        response = requests.post(
+            API_URL,
+            headers=headers,
+            json={
+                "inputs": [text]
+            },
+            timeout=60,
         )
+
+        # print(response.status_code)
+        # print(response.text[:300])
+
+        response.raise_for_status()
+
+        embedding = response.json()
+
+        # Router returns [[...]]
+        if isinstance(embedding, list) and len(embedding) > 0:
+            return embedding[0]
 
         return embedding
 
     except Exception as e:
-        print(f"HF Inference Error: {e}")
+        print("HF Inference Error:", e)
         return None
+print(get_embedding("Hello world"))
     
 def generate_category_embeddings():
 
@@ -86,7 +103,7 @@ def generate_category_embeddings():
         if embedding is None:
             continue
 
-        CATEGORY_EMBEDDINGS[category] = embedding.tolist()
+        CATEGORY_EMBEDDINGS[category] = embedding
 
         print(category, "done")
 
@@ -111,6 +128,7 @@ def cosine_similarity(vec1, vec2):
 
 
 def get_ai_category(title, description, user_selected_category):
+    
     """
     Main function called by views.
     Gets embeddings via HF API and computes similarity against category descriptions.
