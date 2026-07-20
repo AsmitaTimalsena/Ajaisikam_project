@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import Register, Login, Logout, SeekerProfileView, AnswerSeekerListCreateView, AnswerSeekerDetailView, MentorProfileView, MentorReplyDetailView, MentorReplyListCreateView
-from .views import MentorRecommendedPostsView, MentorMyRepliesView, SeekerRecommendedMentorsView
+from .views import MentorRecommendedPostsView, MentorMyRepliesView, SeekerRecommendedMentorsView, SelectMentorView
 urlpatterns = [
     path('register/', Register.as_view(), name='register'),
     path('login/', Login.as_view(), name='login'),
@@ -11,6 +11,7 @@ urlpatterns = [
     path('seeker/profile/', SeekerProfileView.as_view(),name='seeker-profile'),
     path('seeker/posts/', AnswerSeekerListCreateView.as_view(), name='seeker-posts'),
     path('seeker/posts/<uuid:pk>/', AnswerSeekerDetailView.as_view(), name='seeker-post-detail'),
+    path("seeker/posts/<uuid:post_id>/select-mentor/",SelectMentorView.as_view(),name="select-mentor"),
 
 
     #for mentor profile

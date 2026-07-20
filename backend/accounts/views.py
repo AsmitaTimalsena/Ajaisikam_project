@@ -135,6 +135,33 @@ class AnswerSeekerDetailView(APIView):
         post.delete()
         return Response({'message': 'Post deleted successfully'}, status=204)
 
+class SelectMentorView(APIView):
+    permission_classes=[permissions.IsAuthenticated]
+
+    def post(self,request,post_id):
+
+        post=AnswerSeeker.objects.get(id=post_id,seeker=request.user)
+
+        mentor_id=request.data["mentor_id"]
+
+        post.selected_mentor_id=mentor_id
+        post.status="CONNECTED"
+        post.save()
+
+        return Response({"message":"Mentor selected"})
+    
+class ClosePostView(APIView):
+
+    permission_classes=[permissions.IsAuthenticated]
+
+    def post(self,request,post_id):
+
+        post=AnswerSeeker.objects.get(id=post_id,seeker=request.user)
+
+        post.status="CLOSED"
+        post.save()
+
+        return Response({"message":"Closed"})
 
 #-------------------Mentor Profile Views/Pages--------------
 class MentorProfileView(APIView):
@@ -177,6 +204,11 @@ class MentorReplyListCreateView(APIView):
                 post_id=post_id
             )
 
+            post = AnswerSeeker.objects.get(id=post_id)
+            if post.status == "OPEN":
+                post.status = "MATCHED"
+                post.save()
+
             profile = request.user.mentor_profile
             profile.points += 5
 
@@ -205,7 +237,7 @@ class MentorRecommendedPostsView(APIView):
 
         mentor_pfoile = request.user.mentor_profile
         mentor_expertise = mentor_pfoile.expertise 
-        all_posts = AnswerSeeker.objects.filter(status="OPEN").order_by('-created_at')
+        all_posts = AnswerSeeker.objects.filter(status__in=["OPEN", "MATCHED", "CONNECTED"]).order_by('-created_at')
 
         matched_posts = []
 

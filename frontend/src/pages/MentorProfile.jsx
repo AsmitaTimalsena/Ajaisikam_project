@@ -130,6 +130,7 @@ function MentorProfile() {
             localStorage.setItem('location', res.data.location || '')
 
             setShowProfileForm(false)
+            await fetchData()
 
         } catch (err) {
 
@@ -166,9 +167,8 @@ function MentorProfile() {
 
             await updateReply(editingReplyId, replyForm)
 
-            fetchData()
-
             setEditingReplyId(null)
+            await fetchData()
 
         } catch (err) {
 
@@ -189,11 +189,9 @@ function MentorProfile() {
 
             console.log(newReply)
 
-            const res = await createReply(postId, newReply)
+            await createReply(postId, newReply)
 
             console.log(res.data)
-
-            fetchData()
 
             setReplyingPostId(null)
 
@@ -202,6 +200,8 @@ function MentorProfile() {
                 share_contact: false,
                 contact_info: ''
             })
+            await fetchData()
+
 
         } catch (err) {
             console.log(err.response?.data)
