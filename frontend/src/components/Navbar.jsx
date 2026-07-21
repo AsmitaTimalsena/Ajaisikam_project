@@ -13,7 +13,7 @@ function AppNavbar() {
                 <Navbar.Brand href="/" className="fw-bold text-success fs-4">
                     < img src={Logo} alt="Ajaisikam" width = "90" height="65" className='me-2'/>
                     
-                    अजै सिकम : Mentoring Platform
+                    आजै सिकम : Mentoring Platform
                 </Navbar.Brand>
 
                 <Navbar.Toggle aria-controls="main-nav" />
