@@ -18,6 +18,23 @@ function About() {
           interval={null}
           className="about-carousel shadow-sm rounded overflow-hidden"
         >
+          <Carousel.Item>
+            <Card
+              className="border-0 p-5 text-center about-slide-card"
+              style={{ minHeight: '420px' }}
+            >
+              <Card.Body className="d-flex flex-column justify-content-center">
+                <h3 className="fw-bold text-success mb-4">Motto</h3>
+                <p className="text-muted fs-5">
+                  <strong>आजै नसिके, कहिले त?!</strong>
+                </p>
+                <p className="text-muted fs-5">
+                  <strong>If Not Now, Then When?!</strong>
+                </p>
+              </Card.Body>
+            </Card>
+          </Carousel.Item>
+
           {/* Slide 1 */}
           <Carousel.Item>
             <Card
@@ -84,15 +101,16 @@ function About() {
                 <h3 className="fw-bold text-success text-center mb-4">Why It Matters</h3>
                 <Row className="g-4 justify-content-center">
                   <Col md={5}>
-                    <Card className="border-0 shadow-sm h-100 p-3 text-center">
+                    <Card className="border-0 shadow-sm h-100 p-3 text-center bg-success-subtle">
                       <h5 className="fw-bold">For Seekers</h5>
                       <p className="text-muted mb-0">
                         Get faster access to guidance, better career decisions, and less confusion.
                       </p>
                     </Card>
                   </Col>
+
                   <Col md={5}>
-                    <Card className="border-0 shadow-sm h-100 p-3 text-center">
+                    <Card className="border-0 shadow-sm h-100 p-3 text-center bg-success-subtle">
                       <h5 className="fw-bold">For the Community</h5>
                       <p className="text-muted mb-0">
                         Build a healthy mentoring culture, meaningful networking, and support mental well-being.
@@ -113,7 +131,7 @@ function About() {
               <Card.Body className="d-flex flex-column justify-content-center">
                 <h3 className="fw-bold text-success mb-4">How the Platform Works</h3>
                 <p className="text-muted fs-5">
-                  AjaiSikam is built with React, Django REST Framework, and PostgreSQL.
+                  AjaiSikam is built with React, Django REST Framework, and PostgreSQL following TDD and CICD practices.
                   AI models help categorize help requests and match seekers with relevant mentors.
                 </p>
               </Card.Body>
@@ -129,9 +147,9 @@ function About() {
               <Card.Body className="d-flex flex-column justify-content-center">
                 <h3 className="fw-bold text-success mb-4">MVP Scope</h3>
                 <p className="text-muted fs-5">
-                  Users can register as seekers or mentors, post help requests,
-                  receive AI-based mentor suggestions, send connection requests,
-                  and exchange simple threaded messages once connected.
+                  Users can register as seekers or mentors, post help requests, 
+                  receive AI-based mentor suggestions,reply to the requests amd send connection requests.
+                  
                 </p>
               </Card.Body>
             </Card>
@@ -140,7 +158,7 @@ function About() {
       </Container>
       <Footer />
     </div>
-    
+
   )
 }
 
